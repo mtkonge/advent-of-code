@@ -11,12 +11,13 @@ def main():
             currentValue = 0
         else: 
             currentValue += int(v)
+
+    
     index = 0
     top3Values = []
     for v in range(3):
         for i in range(len(newArray)):
             if newArray[i] > currentValue:
-                print(currentValue)
                 currentValue = newArray[i]
                 index = i
         top3Values.append(currentValue)
