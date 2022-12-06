@@ -1,4 +1,4 @@
-# velkommen til shit code centrallen
+# velkommen til shit code centralen
 
 def main():
     calories = open("input.txt", "r").read()
