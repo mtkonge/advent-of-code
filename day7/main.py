@@ -2,16 +2,16 @@ import copy
 
 class File():
     def __init__(self, size: int, name: str) -> None:
-        self.name = name
-        self.size = size
+        self.name: str = name
+        self.size: int = size
 
 class Dir():
     def __init__(self, name: str, parent: str) -> None:
-        self.name = name
-        self.parent = parent
+        self.name: str = name
+        self.parent: str = parent
         self.dirs: list[Dir] = []
         self.files: list[File] = []
-        self.size = 0
+        self.size: int = 0
 
     def __str__(self, level=0):
         result = "\t"*level+repr(self.name)+"\n"
@@ -20,7 +20,7 @@ class Dir():
         return result
     
     def __repr__(self) -> str:
-        return '<Tree representation>'  
+        return '<Tree representation>' 
 
     def updateDirs(self):
         updatedSize = 0
@@ -37,17 +37,19 @@ class Dir():
     def addFile(self, file: File):
         self.files.append(file)
     
-    def find(self, name):
+    def addDirWithValues(self, dirs):
+        self.dirs.append(dirs)
+
+    def find(self, name: str):
+        if name == "":
+            return self
         if self.name == name:
             return self
         for i in range(len(self.dirs)):
             if self.dirs[i].name == name:
                 return self.dirs[i]
-            found = self.dirs[i].find(name)
-            if found != None:
-                return found
+            return self.dirs[i].find(name)
         raise Exception(f"Could not find dir of name {name}")
-        
 
 def testTree():
     tree = Dir("/", "")
@@ -68,7 +70,10 @@ def main():
     commands = f.split("\n")
     tree = Dir("/", "")
     currentDir = copy.deepcopy(tree)
+    totalSizeUnder100000 = 0
+    currentSize = 0
     for c in commands:
+        print(c)
         c = c.split(" ")
         if c[-1] == "/":
             continue
@@ -76,22 +81,22 @@ def main():
             if c[0] == "dir":
                 currentDir.addDir(c[1])
             else:
-                currentDir.addFile(File(c[0], c[1]))
+                size = int(c[0])
+                currentSize += size 
+                currentDir.addFile(File(size, c[1]))
         elif c[1] == "cd":
-            print(tree)
+            if currentSize <= 100000:
+                totalSizeUnder100000 += currentSize
+            currentSize = 0
             if c[2] == "..":
+                raise Exception("Not implemented")
 
-                treeCurrentDir = tree.find(currentDir.name)
-                treeCurrentDir = copy.deepcopy(currentDir)
-                parent = tree.find(currentDir.parent)
-                currentDir = copy.deepcopy(parent)
             else:
-                treeCurrentDir = tree.find(currentDir.name)
-                treeCurrentDir = copy.deepcopy(currentDir)
-                for d in tree.dirs:
+                for d in currentDir.dirs:
                     if d.name == c[2]:
                         currentDir = d
-            
+                raise Exception("Not implemented")
+    print(totalSizeUnder100000)
 
                 
 
